@@ -1,15 +1,30 @@
 extern crate actix_web;
 
-use actix_web::{middleware, App, HttpServer};
+#[macro_use]
+extern crate diesel;
+
+extern crate dotenv;
+
+use diesel::prelude::*;
+use diesel::PgConnection;
+use dotenv::dotenv;
+use r2d2::{Pool, PooledConnection};
+
+use actix_web::{App, HttpServer};
 
 use std::{env, io};
 
 mod models;
 mod routes;
+mod schema;
 
 #[actix_rt::main]
 async fn main() -> io::Result<()> {
     env::set_var("RUST_LOG", "actix_web=debug,actix_server=info");
+
+    dotenv().ok();
+
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL is not set properly");
 
     HttpServer::new(|| {
         App::new()
