@@ -34,7 +34,7 @@ async fn main() -> io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
-            .app_data(pool.clone())
+            .app_data(pool.get())
             .service(routes::get_all_books)
             .service(routes::get_book)
             .service(routes::insert_book)
